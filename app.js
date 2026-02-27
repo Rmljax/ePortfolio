@@ -10,9 +10,30 @@ function closeMenu() {
   body.classList.remove("open");
 }
 
-// template_qgwowcm
-// service_hlgfoad
-// 6D6FmqQfh0rPFfjcD
+window.addEventListener("scroll", () => {
+  const scrollPos = window.scrollY;
+  const navBar = document.querySelector(".nav");
+  const navCon = document.querySelector(".nav__container");
+  const navLinks = document.querySelectorAll(".nav__link");
+  const home = document.querySelector("#home");
+
+  if (scrollPos > 10) {
+    navBar.classList.add("scrolled-past");
+    navCon.classList.add("scrolled-past");
+  } else {
+    navBar.classList.remove("scrolled-past");
+    navCon.classList.remove("scrolled-past");
+  }
+  if (scrollPos > home.offsetHeight - 1) {
+    navLinks.forEach((navLink) => {
+      navLink.classList.add("color-change");
+    });
+  } else {
+    navLinks.forEach((navLink) => {
+      navLink.classList.remove("color-change");
+    });
+  }
+});
 
 async function sendEmail(event) {
   event.preventDefault();
