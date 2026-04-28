@@ -4,7 +4,17 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { PointMaterial } from "@react-three/drei";
 
-export default function HeroParticles({ count = 5000, color, size }) {
+interface HeroParticlesProps {
+  count: number;
+  color: string;
+  size: number;
+}
+
+export default function HeroParticles({
+  count = 5000,
+  color,
+  size,
+}: HeroParticlesProps) {
   const pointsRef = useRef<THREE.Points>(null!);
   const materialsRef = useRef<THREE.PointsMaterial>(null!);
 
