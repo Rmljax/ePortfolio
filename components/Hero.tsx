@@ -1,6 +1,6 @@
 import React from "react";
-import HeroCanvas from "./ui/HeroCanvas";
-import HeroTyping from "./ui/HeroTyping";
+import HeroCanvas from "./hero_ui/HeroCanvas";
+import HeroTyping from "./hero_ui/HeroTyping";
 
 export default function Hero() {
   return (

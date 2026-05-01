@@ -1,5 +1,5 @@
 "use client";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import HeroParticles from "./HeroParticles";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
