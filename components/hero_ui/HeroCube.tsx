@@ -191,7 +191,27 @@ export default function HeroCube() {
   }, []);
 
   useEffect(() => {
-    setXPos(size.width / size.height);
+    const asp = size.width / size.height;
+
+    if (size.width < 768) {
+      setScale(0.75);
+      setXPos(asp * 1.5);
+    } else if (size.width < 1024) {
+      setScale(0.9);
+      setXPos(asp * 2.2);
+    } else if (size.width < 1440) {
+      setScale(1.1);
+      setXPos(asp * 3);
+    } else if (size.width < 2560) {
+      setScale(1.2);
+      setXPos(asp * 4);
+    } else {
+      setScale(1.3);
+      setXPos(asp * 4);
+    }
+
+    // setScale(asp - 1);
+    console.log(asp);
   }, [size]);
 
   useFrame(() => {

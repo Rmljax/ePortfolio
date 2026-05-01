@@ -52,7 +52,7 @@ export default function HeroTyping() {
         transform: mounted ? "translateY(0)" : "translateY(16px)",
         transition: "opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s",
       }}
-      className=" ext-3xl mt-4 text-[#64748b] [text-shadow:0_0_20px_#64748b,0_0_40px_#64748b,0_0_10px_#38bdf8]"
+      className="mt-4 text-[#64748b] [text-shadow:0_0_20px_#64748b,0_0_40px_#64748b,0_0_10px_#38bdf8]"
     >
       <span style={styles.roleLabel}>$&nbsp;</span>
       <span style={styles.roleText}>{displayed}</span>
