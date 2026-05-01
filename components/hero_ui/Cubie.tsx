@@ -13,15 +13,15 @@ const COLORS = {
   black: "#0f172a",
 };
 
-export default function Cubie({
-  inititalPosition,
-}: {
+interface CubieProps {
   initialPosition: [number, number, number];
-}) {
+}
+
+export default function Cubie({ initialPosition }: CubieProps) {
   const meshRef = useRef<THREE.Group>(null!);
 
   const getStickers = () => {
-    const [x, y, z] = inititalPosition;
+    const [x, y, z] = initialPosition;
     return [
       {
         axis: [1, 0, 0],
@@ -55,7 +55,7 @@ export default function Cubie({
   const stickerData = useMemo(() => getStickers(), []);
 
   return (
-    <group ref={meshRef} position={inititalPosition}>
+    <group ref={meshRef} position={initialPosition}>
       <RoundedBox args={[0.92, 0.92, 0.92]} radius={0.08} smoothness={4}>
         <meshPhysicalMaterial color={COLORS.black} roughness={0.2} />
       </RoundedBox>
