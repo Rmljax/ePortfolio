@@ -92,7 +92,6 @@ export default function HeroCube() {
   const isMoving = useRef(false);
   const currentIndex = useRef(0);
   const activeTween = useRef<gsap.core.Tween | null>(null);
-  const scroll = useScroll();
   const { size } = useThree();
 
   const rotation = useMemo(() => ({ x: 0, y: 0 }), []);
@@ -209,9 +208,6 @@ export default function HeroCube() {
       setScale(1.3);
       setXPos(asp * 4);
     }
-
-    // setScale(asp - 1);
-    console.log(asp);
   }, [size]);
 
   useFrame(() => {

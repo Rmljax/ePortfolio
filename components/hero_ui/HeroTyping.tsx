@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 export default function HeroTyping() {
-  const ROLES = ["Frontend Developer", "UI Engineer", "React Specialist"];
+  const ROLES = ["Frontend Engineer", "UI/UX Designer", "React Specialist"];
   const TYPING_SPEED = 80;
   const DELETING_SPEED = 40;
   const PAUSE_DURATION = 1800;
