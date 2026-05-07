@@ -11,11 +11,15 @@ gsap.registerPlugin(ScrollTrigger);
 const pages = [
   { pos: [0, 0, 15], lookAt: [0, 0, 0] },
   { pos: [0, -4, 15], lookAt: [0, -10, 0] },
-  { pos: [0, -8, 15], lookAt: [0, -20, 0] },
+  { pos: [8.18, 0, 7], lookAt: [8.18, 0, 0] },
+  { pos: [8, -4, 10], lookAt: [8, -10, 0] },
+  { pos: [8, -4, -10], lookAt: [8, -10, -20] },
 ];
 
 export default function CameraController() {
   const { camera } = useThree();
+  const { size } = useThree();
+  const asp = size.width / size.height;
 
   useLayoutEffect(() => {
     // We create a proxy object to animate the "target" the camera looks at
@@ -30,9 +34,8 @@ export default function CameraController() {
         trigger: "#viewport",
         start: "top top",
         end: "bottom bottom",
-        scrub: 1,
+        scrub: true,
         snap: 1 / (pages.length - 1),
-        markers: true,
       },
       onUpdate: () => {
         // Force the camera to look at our animated proxy on every scroll tick

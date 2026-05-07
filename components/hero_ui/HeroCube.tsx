@@ -92,7 +92,7 @@ export default function HeroCube() {
   const isMoving = useRef(false);
   const currentIndex = useRef(0);
   const activeTween = useRef<gsap.core.Tween | null>(null);
-  const { size } = useThree();
+  const { size, camera } = useThree();
 
   const rotation = useMemo(() => ({ x: 0, y: 0 }), []);
 
@@ -177,7 +177,7 @@ export default function HeroCube() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      if (!document.hidden && !isMoving.current) {
+      if (!document.hidden && !isMoving.current && camera.position.x === 0) {
         const { axis, slice, dir } = gemSequence[currentIndex.current];
         handleMove(axis, slice, dir);
         currentIndex.current = (currentIndex.current + 1) % gemSequence.length;
@@ -211,8 +211,13 @@ export default function HeroCube() {
   }, [size]);
 
   useFrame(() => {
-    containerRef.current.rotation.x = rotation.x;
-    containerRef.current.rotation.y = rotation.y;
+    if (camera.position.x === 0) {
+      containerRef.current.rotation.x = rotation.x;
+      containerRef.current.rotation.y = rotation.y;
+    } else {
+      containerRef.current.rotation.x = 0;
+      containerRef.current.rotation.y = 0;
+    }
   });
 
   return (

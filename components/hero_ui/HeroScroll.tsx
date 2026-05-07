@@ -1,20 +1,23 @@
 "use client";
 
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import { Text, Text3D } from "@react-three/drei";
 
 export default function HeroScroll() {
   const groupRef = useRef<any>(null!);
   const arrowRef = useRef<any>(null!);
+  const { camera } = useThree();
 
   useFrame((state) => {
     const bobbing = -2 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
     groupRef.current.position.y = -2 + bobbing;
-    arrowRef.current.rotation.y += 0.02;
+    if (camera.position.y > -4) {
+      arrowRef.current.rotation.y += 0.02;
+    }
   });
   return (
-    <group ref={groupRef} position={[-8, 2, 2]}>
+    <group ref={groupRef} position={[-8, 0, 0]}>
       <Text3D
         rotation={[0, 0.4, 0]}
         font="/fonts/michroma_regular.json"

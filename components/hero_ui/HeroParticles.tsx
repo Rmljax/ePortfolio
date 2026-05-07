@@ -18,15 +18,15 @@ export default function HeroParticles({
   const pointsRef = useRef<THREE.Points>(null!);
   const materialsRef = useRef<THREE.PointsMaterial>(null!);
 
-  const speed = new Array(count).fill(Math.random() * 0.1 + 0.05);
+  const speed = new Array(count).fill(Math.random() * 0.1 + 0.06);
 
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
 
     for (let i = 0; i < count * 3; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 40;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 40;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 40;
+      pos[i * 3] = (Math.random() - 0.5) * 60;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 60;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 60;
     }
     return pos;
   }, [count]);
