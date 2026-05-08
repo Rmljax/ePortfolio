@@ -7,11 +7,15 @@ import { Text, Text3D } from "@react-three/drei";
 export default function HeroScroll() {
   const groupRef = useRef<any>(null!);
   const arrowRef = useRef<any>(null!);
-  const { camera } = useThree();
+  const { camera, size } = useThree();
 
   useFrame((state) => {
     const bobbing = -2 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
     groupRef.current.position.y = -2 + bobbing;
+    if (size.width <= 425) {
+      groupRef.current.position.x = -0.5;
+    }
+
     if (camera.position.y > -4) {
       arrowRef.current.rotation.y += 0.02;
     }

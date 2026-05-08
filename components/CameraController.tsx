@@ -1,9 +1,9 @@
 "use client";
 
-import { useThree } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 // Register outside to prevent memory leaks/re-registration
 gsap.registerPlugin(ScrollTrigger);
@@ -16,10 +16,12 @@ const pages = [
   { pos: [8, -4, -10], lookAt: [8, -10, -20] },
 ];
 
-export default function CameraController() {
-  const { camera } = useThree();
-  const { size } = useThree();
-  const asp = size.width / size.height;
+interface HeroCubeProps {
+  xPos: number;
+}
+
+export default function CameraController({ xPos }: HeroCubeProps) {
+  const { camera, size } = useThree();
 
   useLayoutEffect(() => {
     // We create a proxy object to animate the "target" the camera looks at

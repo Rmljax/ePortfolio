@@ -83,8 +83,11 @@ const gemSequence = [
   Up,
 ];
 
-export default function HeroCube() {
-  const [xPos, setXPos] = useState(0);
+interface HeroCubeProps {
+  xPos: number;
+}
+
+export default function HeroCube({ xPos }: HeroCubeProps) {
   const [scale, setScale] = useState(1);
   const containerRef = useRef<THREE.Group>(null!);
   const groupRef = useRef<THREE.Group>(null!);
@@ -190,24 +193,18 @@ export default function HeroCube() {
   }, []);
 
   useEffect(() => {
-    const asp = size.width / size.height;
-
     if (size.width < 768) {
       setScale(0.75);
-      setXPos(asp * 1.5);
     } else if (size.width < 1024) {
       setScale(0.9);
-      setXPos(asp * 2.2);
     } else if (size.width < 1440) {
       setScale(1);
-      setXPos(asp * 3);
     } else if (size.width < 2560) {
       setScale(1.2);
-      setXPos(asp * 4);
     } else {
       setScale(1.3);
-      setXPos(asp * 4);
     }
+    console.log(xPos);
   }, [size]);
 
   useFrame(() => {
