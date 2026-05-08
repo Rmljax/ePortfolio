@@ -199,7 +199,7 @@ export default function HeroCube() {
       setScale(0.9);
       setXPos(asp * 2.2);
     } else if (size.width < 1440) {
-      setScale(1.1);
+      setScale(1);
       setXPos(asp * 3);
     } else if (size.width < 2560) {
       setScale(1.2);
