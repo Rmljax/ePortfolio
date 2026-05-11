@@ -1,5 +1,5 @@
 "use client";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import HeroParticles from "./HeroParticles";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
@@ -10,6 +10,8 @@ import { ScrollTrigger } from "gsap/all";
 import CameraController from "../CameraController";
 import HeroTyping from "./HeroTyping";
 import CubieProjects from "./CubieProjects";
+import * as THREE from "three";
+import EarthModel from "./EarthModel";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,6 +20,8 @@ export default function HeroCanvas() {
     undefined,
   );
   const [cubeX, setCubeX] = useState(0);
+  const [overlayPos, setOverlayPos] = useState({ x: 0, y: 0 });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const asp = window.innerWidth / window.innerHeight;
@@ -46,7 +50,7 @@ export default function HeroCanvas() {
           camera={{ position: [0, 0, 15], fov: 50 }}
           eventSource={eventSource}
         >
-          <CameraController />
+          <CameraController xPos={cubeX} />
           <color attach="background" args={["#020618"]} />
           <HeroParticles count={2000} color={"#6478ba"} size={0.05} />
           <HeroParticles count={2000} color={"#bae6fd"} size={0.1} />
@@ -58,8 +62,13 @@ export default function HeroCanvas() {
             color={"#38bdf8"}
           />
           <HeroCube xPos={cubeX} />
+          <EarthModel />
+          <OverlayTracker
+            setOverlayPos={setOverlayPos}
+            setMounted={setMounted}
+          />
           <HeroScroll />
-          {/* <CubieProjects /> */}
+          <pointLight position={[15, -5, -15]} intensity={2} color="#ffffff" />
           <EffectComposer>
             <Bloom
               intensity={1.5}
@@ -97,25 +106,7 @@ export default function HeroCanvas() {
             </div>
           </div>
         </section>
-        <section className="h-screen flex items-center p-10 text-white">
-          <div className="flex flex-col m-auto min-[1024px]:w-[320px] min-[1440px]:w-[640px] min-[2560px]:w-[640px] h-3/4 space-y-13">
-            <div className="flex h-1/3 space-x-14">
-              <div className="flex border w-1/3 border-[rgba(186,230,253,0.2)] shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.5)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] hover:border-[rgba(186,230,253,0.2)] transition ease-in-out"></div>
-              <div className="flex border w-1/3 border-[rgba(186,230,253,0.2)] shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.5)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] hover:border-[rgba(186,230,253,0.2)] transition ease-in-out"></div>
-              <div className="flex border w-1/3 border-[rgba(186,230,253,0.2)] shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.5)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] hover:border-[rgba(186,230,253,0.2)] transition ease-in-out"></div>
-            </div>
-            <div className="flex h-1/3 space-x-14">
-              <div className="flex border w-1/3 border-[rgba(186,230,253,0.2)] shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.5)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] hover:border-[rgba(186,230,253,0.2)] transition ease-in-out"></div>
-              <div className="flex border w-1/3 border-[rgba(186,230,253,0.2)] shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.5)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] hover:border-[rgba(186,230,253,0.2)] transition ease-in-out"></div>
-              <div className="flex border w-1/3 border-[rgba(186,230,253,0.2)] shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.5)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] hover:border-[rgba(186,230,253,0.2)] transition ease-in-out"></div>
-            </div>
-            <div className="flex h-1/3 space-x-14">
-              <div className="flex border w-1/3 border-[rgba(186,230,253,0.2)] shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.5)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] hover:border-[rgba(186,230,253,0.2)] transition ease-in-out"></div>
-              <div className="flex border w-1/3 border-[rgba(186,230,253,0.2)] shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.5)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] hover:border-[rgba(186,230,253,0.2)] transition ease-in-out"></div>
-              <div className="flex border w-1/3 border-[rgba(186,230,253,0.2)] shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.5)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] hover:border-[rgba(186,230,253,0.2)] transition ease-in-out"></div>
-            </div>
-          </div>
-        </section>
+        <section className="h-screen flex items-center p-10 text-white relative"></section>
         <section className="h-screen flex items-center p-10 text-white">
           <h1 className="m-auto text-[#bae6fd] text-sm md:text-md xl:text-lg 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
             Hold on tight!
@@ -123,6 +114,60 @@ export default function HeroCanvas() {
         </section>
         <section className="h-screen flex items-center p-10 text-white"></section>
       </div>
+      {mounted && (
+        <div className="fixed inset-0 pointer-events-none z-[100]">
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: `${overlayPos.x}px`,
+              top: `${overlayPos.y}px`,
+              transform: `translate(-50%, -50%)`,
+              willChange: "left, top, transform",
+              transition: "none",
+              width: "630px",
+              height: "630px",
+            }}
+          >
+            <div className="grid grid-cols-3 gap-14 w-full h-full pointer-events-auto">
+              {[...Array(9)].map((_, i) => (
+                <div
+                  key={i}
+                  className="pointer-events-auto bg-white/0 border border-[rgba(186,230,253,0.2)] shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.3)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] transition-all cursor-pointer"
+                />
+              ))}{" "}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
+}
+
+function OverlayTracker({
+  setOverlayPos,
+  setMounted,
+}: {
+  setOverlayPos: (pos: { x: number; y: number }) => void;
+  setMounted: (mounted: boolean) => void;
+}) {
+  const { camera, size, scene } = useThree();
+  const vec = new THREE.Vector3();
+
+  useFrame(() => {
+    const cube = scene.getObjectByName("hero-cube-container");
+    const isVisible =
+      Math.abs(camera.position.x) > 0.1 && camera.position.y === 0;
+    setMounted(isVisible);
+    if (!cube || !isVisible) return;
+
+    cube.getWorldPosition(vec);
+
+    vec.project(camera);
+
+    const newX = (vec.x * 0.5 + 0.5) * size.width;
+    const newY = (vec.y * -0.5 + 0.5) * size.height;
+
+    setOverlayPos({ x: newX, y: newY });
+  }, 1);
+  return null;
 }

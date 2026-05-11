@@ -220,6 +220,7 @@ export default function HeroCube({ xPos }: HeroCubeProps) {
   return (
     <group
       ref={containerRef}
+      name="hero-cube-container"
       scale={[scale, scale, scale]}
       position={[xPos, 0, 0]}
     >

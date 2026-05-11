@@ -8,20 +8,19 @@ import { useEffect, useLayoutEffect, useState } from "react";
 // Register outside to prevent memory leaks/re-registration
 gsap.registerPlugin(ScrollTrigger);
 
-const pages = [
-  { pos: [0, 0, 15], lookAt: [0, 0, 0] },
-  { pos: [0, -4, 15], lookAt: [0, -10, 0] },
-  { pos: [8.18, 0, 7], lookAt: [8.18, 0, 0] },
-  { pos: [8, -4, 10], lookAt: [8, -10, 0] },
-  { pos: [8, -4, -10], lookAt: [8, -10, -20] },
-];
-
 interface HeroCubeProps {
   xPos: number;
 }
 
 export default function CameraController({ xPos }: HeroCubeProps) {
   const { camera, size } = useThree();
+  const pages = [
+    { pos: [0, 0, 15], lookAt: [0, 0, 0] },
+    { pos: [0, -4, 15], lookAt: [0, -10, 0] },
+    { pos: [xPos, 0, 7], lookAt: [xPos, 0, 0] },
+    { pos: [8, -4, 10], lookAt: [8, -10, 0] },
+    { pos: [8, -4, -10], lookAt: [8, -10, -20] },
+  ];
 
   useLayoutEffect(() => {
     // We create a proxy object to animate the "target" the camera looks at
