@@ -1,6 +1,6 @@
 import { useTexture } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 export default function EarthModel() {
@@ -9,16 +9,29 @@ export default function EarthModel() {
 
     roughnessMap: "/specularClouds.jpg",
   });
+  const [scale, setScale] = useState(1);
+  const { size } = useThree();
 
   const meshRef = useRef<THREE.Mesh>(null!);
+
+  useEffect(() => {
+    if (size.width <= 425) {
+      setScale(0.5);
+    } else if (size.width <= 768) {
+      setScale(0.75);
+    } else if (size.width <= 768) {
+      setScale(1);
+    }
+  }, []);
 
   useFrame(({ camera }) => {
     if (meshRef.current) {
       const material = meshRef.current.material as THREE.MeshStandardMaterial;
 
-      if (camera.position.z < -5) {
+      if (camera.position.z <= 1) {
         material.transparent = true;
-        material.opacity = Math.min(1, Math.abs(camera.position.z + 5) / 5);
+
+        material.opacity = Math.min(10, Math.abs(camera.position.z - 1) / 1.1);
         meshRef.current.visible = material.opacity > 0;
       } else {
         meshRef.current.visible = false;
@@ -28,7 +41,7 @@ export default function EarthModel() {
     }
   });
   return (
-    <mesh ref={meshRef} position={[8, -10, -20]}>
+    <mesh ref={meshRef} position={[8, -10, -20]} scale={[scale, scale, scale]}>
       {" "}
       <sphereGeometry args={[3, 64, 64]} />
       <meshStandardMaterial

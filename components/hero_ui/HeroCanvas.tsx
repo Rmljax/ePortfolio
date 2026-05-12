@@ -26,16 +26,16 @@ export default function HeroCanvas() {
   useEffect(() => {
     const asp = window.innerWidth / window.innerHeight;
 
-    if (window.innerWidth < 768) {
-      setCubeX(asp * 1.5);
-    } else if (window.innerWidth < 1024) {
-      setCubeX(asp * 2.2);
-    } else if (window.innerWidth < 1440) {
-      setCubeX(asp * 3);
-    } else if (window.innerWidth < 2560) {
-      setCubeX(asp * 4);
+    if (window.innerWidth <= 425) {
+      setCubeX(1.3);
+    } else if (window.innerWidth <= 768) {
+      setCubeX(1.8);
+    } else if (window.innerWidth <= 1024) {
+      setCubeX(4);
+    } else if (window.innerWidth <= 2560) {
+      setCubeX(5);
     } else {
-      setCubeX(asp * 4);
+      setCubeX(6);
     }
   }, []);
 
@@ -89,11 +89,11 @@ export default function HeroCanvas() {
         </section>
         <section className="h-screen flex items-center p-10 text-white">
           <div className="flex -mt-20 md:m-auto space-x-100 h-3/4">
-            <div className="text-center flex flex-col md:w-1/2 m-auto rounded-2xl p-8 border border-[rgba(186,230,253,0.1)] animate-shadow-pulse shadow-[0_0_50px_10px_rgba(186,230,253,0.4)] bg-[rgba(186,230,253,0.05)] backdrop-blur-[2px]">
-              <h1 className="text-[#bae6fd] text-xl md:text-2xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
+            <div className="text-center flex flex-col md:w-2/3 m-auto rounded-2xl p-8 border border-[rgba(186,230,253,0.1)] animate-shadow-pulse shadow-[0_0_50px_10px_rgba(186,230,253,0.4)] bg-[rgba(186,230,253,0.05)] backdrop-blur-[2px]">
+              <h1 className="text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
                 Who I am:
               </h1>
-              <p className="text-[#bae6fd] text-xs md:text-md xl:text-lg 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8] flex flex-col space-y-4 mt-4 ml-4">
+              <p className="text-[#bae6fd] text-xs md:text-sm xl:text-lg 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8] flex flex-col space-y-4 mt-4 ml-4">
                 I am a Frontend Engineer with an eye for detail and a focus on
                 creating user-friendly interfaces.
                 <br />
@@ -108,7 +108,7 @@ export default function HeroCanvas() {
         </section>
         <section className="h-screen flex items-center p-10 text-white relative"></section>
         <section className="h-screen flex items-center p-10 text-white">
-          <h1 className="m-auto text-[#bae6fd] text-sm md:text-md xl:text-lg 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
+          <h1 className="m-auto text-[#bae6fd] text-xl md:text-2xl xl:text-3xl 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
             Hold on tight!
           </h1>
         </section>
@@ -117,18 +117,16 @@ export default function HeroCanvas() {
       {mounted && (
         <div className="fixed inset-0 pointer-events-none z-[100]">
           <div
-            className="absolute pointer-events-none"
+            className="absolute pointer-events-none w-[244px] h-[244px] min-[426px]:w-[316px] min-[426px]:h-[316px] min-[769px]:w-[394px] min-[769px]:h-[394px] min-[1025px]:w-[472px] min-[1025px]:h-[472px] min-[1441px]:w-[628px] min-[1441px]:h-[628px] min-[2561px]:w-[700px] min-[2561px]:h-[700px]"
             style={{
               left: `${overlayPos.x}px`,
               top: `${overlayPos.y}px`,
               transform: `translate(-50%, -50%)`,
               willChange: "left, top, transform",
               transition: "none",
-              width: "630px",
-              height: "630px",
             }}
           >
-            <div className="grid grid-cols-3 gap-14 w-full h-full pointer-events-auto">
+            <div className="grid grid-cols-3 gap-5.5 min-[426px]:gap-7 min-[769px]:gap-8.75 min-[1025px]:gap-10.75 min-[1441px]:gap-14.5 w-full h-full pointer-events-auto">
               {[...Array(9)].map((_, i) => (
                 <div
                   key={i}

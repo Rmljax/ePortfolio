@@ -12,8 +12,27 @@ export default function HeroScroll() {
   useFrame((state) => {
     const bobbing = -2 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
     groupRef.current.position.y = -2 + bobbing;
-    if (size.width <= 425) {
-      groupRef.current.position.x = -0.5;
+    if (size.width <= 320) {
+      groupRef.current.position.x = -0.9;
+      groupRef.current.position.y = -5.2;
+    } else if (size.width <= 375) {
+      groupRef.current.position.x = -1.2;
+      groupRef.current.position.y = -5.2;
+    } else if (size.width <= 596) {
+      groupRef.current.position.x = -1.4;
+      groupRef.current.position.y = -5.2;
+    } else if (size.width <= 768) {
+      groupRef.current.position.x = -3;
+      groupRef.current.position.y = -5.2;
+    } else if (size.width <= 1024) {
+      groupRef.current.position.x = -4;
+      groupRef.current.position.y = -5.2;
+    } else if (size.width <= 1440) {
+      groupRef.current.position.x = -5;
+      groupRef.current.position.y = -5.2;
+    } else if (size.width <= 2560) {
+      groupRef.current.position.x = -7;
+      groupRef.current.position.y = -5.2;
     }
 
     if (camera.position.y > -4) {

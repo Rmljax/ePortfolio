@@ -193,13 +193,15 @@ export default function HeroCube({ xPos }: HeroCubeProps) {
   }, []);
 
   useEffect(() => {
-    if (size.width < 768) {
+    if (size.width <= 425) {
+      setScale(0.6);
+    } else if (size.width <= 768) {
       setScale(0.75);
-    } else if (size.width < 1024) {
+    } else if (size.width <= 1024) {
       setScale(0.9);
-    } else if (size.width < 1440) {
+    } else if (size.width <= 1440) {
       setScale(1);
-    } else if (size.width < 2560) {
+    } else if (size.width <= 2560) {
       setScale(1.2);
     } else {
       setScale(1.3);
