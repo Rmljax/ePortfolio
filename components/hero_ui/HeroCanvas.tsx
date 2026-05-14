@@ -123,18 +123,18 @@ export default function HeroCanvas() {
             style={{
               left: `${overlayPos.x}px`,
               top: `${overlayPos.y}px`,
-              width: `${overlaySize.w - 40}px`,
-              height: `${overlaySize.h - 40}px`,
+              width: `${overlaySize.w}px`,
+              height: `${overlaySize.h}px`,
               transform: `translate(-50%, -50%)`,
               willChange: "left, top, transform",
               transition: "none",
             }}
           >
-            <div className="grid grid-cols-3 gap-14 w-full h-full pointer-events-auto">
+            <div className="grid grid-cols-3 gap-2 w-full h-full pointer-events-auto">
               {[...Array(9)].map((_, i) => (
                 <div
                   key={i}
-                  className="pointer-events-auto bg-white/0 border border-[rgba(186,230,253,0.2)] shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.3)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] transition-all cursor-pointer"
+                  className="pointer-events-auto m-[11%] bg-white/0 border border-[rgba(186,230,253,0.2)] shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.3)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] transition-all cursor-pointer"
                 />
               ))}{" "}
             </div>
