@@ -18,7 +18,7 @@ export default function CameraController({ xPos }: HeroCubeProps) {
     { pos: [0, 0, 15], lookAt: [0, 0, 0] },
     { pos: [0, -4, 15], lookAt: [0, -10, 0] },
     { pos: [xPos, 0, 7], lookAt: [xPos, 0, 0] },
-    { pos: [8, -4, 10], lookAt: [8, -10, 0] },
+    { pos: [8, -4, 10], lookAt: [8, -12, -20] },
     { pos: [8, -4, -10], lookAt: [8, -10, -20] },
   ];
 

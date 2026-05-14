@@ -12,6 +12,7 @@ import HeroTyping from "./HeroTyping";
 import CubieProjects from "./CubieProjects";
 import * as THREE from "three";
 import EarthModel from "./EarthModel";
+import FinalScroll from "./FinalScroll";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -70,6 +71,7 @@ export default function HeroCanvas() {
             setOverlaySize={setOverlaySize}
           />
           <HeroScroll />
+          <FinalScroll />
           <pointLight position={[15, -5, -15]} intensity={2} color="#ffffff" />
           <EffectComposer>
             <Bloom
@@ -96,22 +98,29 @@ export default function HeroCanvas() {
                 Who I am:
               </h1>
               <p className="text-[#bae6fd] text-xs md:text-sm xl:text-lg 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8] flex flex-col space-y-4 mt-4 ml-4">
-                I am a Frontend Engineer with an eye for detail and a focus on
-                creating user-friendly interfaces.
                 <br />
-                <br />I have 5+ years in education where I've delved into high
-                level math and computer science logic.
+                I’m a Frontend Engineer with a background in mathematics and
+                computer science education. After 5+ years of breaking down
+                complex logic for students, I now apply that same architectural
+                mindset to building immersive web experiences.
                 <br />
-                <br />I have used my skills gained as an educator to advance my
-                skills at light speed on my journey to becoming a developer.
+                <br />I specialize in the intersection of performance and
+                aesthetics—using React, Three.js, and GSAP to turn abstract
+                concepts into interactive reality. My transition from educator
+                to developer wasn’t just a career change; it was an evolution of
+                my passion for logic, problem-solving, and clean design.
               </p>
             </div>
           </div>
         </section>
-        <section className="h-screen flex items-center p-10 text-white relative"></section>
-        <section className="h-screen flex items-center p-10 text-white">
-          <h1 className="m-auto text-[#bae6fd] text-xl md:text-2xl xl:text-3xl 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
-            Hold on tight!
+        <section className="h-screen p-10 text-white">
+          <h1 className="ml-[4%] mt-[2%] text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
+            What I do:
+          </h1>
+        </section>
+        <section className="h-screen flex p-10 text-white">
+          <h1 className="mx-auto mt-[4%] text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
+            Where to find me:
           </h1>
         </section>
         <section className="h-screen flex items-center p-10 text-white"></section>
