@@ -21,6 +21,7 @@ export default function HeroCanvas() {
   );
   const [cubeX, setCubeX] = useState(0);
   const [overlayPos, setOverlayPos] = useState({ x: 0, y: 0 });
+  const [overlaySize, setOverlaySize] = useState({ w: 0, h: 0 });
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -66,6 +67,7 @@ export default function HeroCanvas() {
           <OverlayTracker
             setOverlayPos={setOverlayPos}
             setMounted={setMounted}
+            setOverlaySize={setOverlaySize}
           />
           <HeroScroll />
           <pointLight position={[15, -5, -15]} intensity={2} color="#ffffff" />
@@ -117,16 +119,18 @@ export default function HeroCanvas() {
       {mounted && (
         <div className="fixed inset-0 pointer-events-none z-[100]">
           <div
-            className="absolute pointer-events-none w-[244px] h-[244px] min-[426px]:w-[316px] min-[426px]:h-[316px] min-[769px]:w-[394px] min-[769px]:h-[394px] min-[1025px]:w-[472px] min-[1025px]:h-[472px] min-[1441px]:w-[628px] min-[1441px]:h-[628px] min-[2561px]:w-[700px] min-[2561px]:h-[700px]"
+            className="absolute pointer-events-none"
             style={{
               left: `${overlayPos.x}px`,
               top: `${overlayPos.y}px`,
+              width: `${overlaySize.w - 40}px`,
+              height: `${overlaySize.h - 40}px`,
               transform: `translate(-50%, -50%)`,
               willChange: "left, top, transform",
               transition: "none",
             }}
           >
-            <div className="grid grid-cols-3 gap-5.5 min-[426px]:gap-7 min-[769px]:gap-8.75 min-[1025px]:gap-10.75 min-[1441px]:gap-14.5 w-full h-full pointer-events-auto">
+            <div className="grid grid-cols-3 gap-14 w-full h-full pointer-events-auto">
               {[...Array(9)].map((_, i) => (
                 <div
                   key={i}
@@ -144,11 +148,14 @@ export default function HeroCanvas() {
 function OverlayTracker({
   setOverlayPos,
   setMounted,
+  setOverlaySize,
 }: {
   setOverlayPos: (pos: { x: number; y: number }) => void;
   setMounted: (mounted: boolean) => void;
+  setOverlaySize: (size: { w: number; h: number }) => void;
 }) {
   const { camera, size, scene } = useThree();
+  const box = new THREE.Box3();
   const vec = new THREE.Vector3();
 
   useFrame(() => {
@@ -158,14 +165,35 @@ function OverlayTracker({
     setMounted(isVisible);
     if (!cube || !isVisible) return;
 
-    cube.getWorldPosition(vec);
+    box.setFromObject(cube);
 
-    vec.project(camera);
+    let minX = Infinity,
+      maxX = -Infinity,
+      minY = Infinity,
+      maxY = -Infinity;
 
-    const newX = (vec.x * 0.5 + 0.5) * size.width;
-    const newY = (vec.y * -0.5 + 0.5) * size.height;
+    const corners = [
+      new THREE.Vector3(box.min.x, box.min.y, box.min.z),
+      new THREE.Vector3(box.max.x, box.min.y, box.min.z),
+      new THREE.Vector3(box.min.x, box.max.y, box.min.z),
+      new THREE.Vector3(box.min.x, box.min.y, box.max.z),
+      new THREE.Vector3(box.max.x, box.max.y, box.min.z),
+      new THREE.Vector3(box.max.x, box.min.y, box.max.z),
+      new THREE.Vector3(box.min.x, box.max.y, box.max.z),
+      new THREE.Vector3(box.max.x, box.max.y, box.max.z),
+    ];
 
-    setOverlayPos({ x: newX, y: newY });
+    corners.forEach((corner) => {
+      corner.project(camera);
+      const x = (corner.x * 0.5 + 0.5) * size.width;
+      const y = (corner.y * -0.5 + 0.5) * size.height;
+      minX = Math.min(minX, x);
+      maxX = Math.max(maxX, x);
+      minY = Math.min(minY, y);
+      maxY = Math.max(maxY, y);
+    });
+    setOverlayPos({ x: (minX + maxX) / 2, y: (minY + maxY) / 2 });
+    setOverlaySize({ w: maxX - minX, h: maxY - minY });
   }, 1);
   return null;
 }
