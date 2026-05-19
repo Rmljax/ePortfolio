@@ -32,6 +32,7 @@ export default function CameraController({ xPos }: HeroCubeProps) {
 
     const tl = gsap.timeline({
       scrollTrigger: {
+        id: "camera-scroll",
         trigger: "#viewport",
         start: "top top",
         end: "bottom bottom",

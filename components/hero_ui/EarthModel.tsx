@@ -1,4 +1,4 @@
-import { useTexture } from "@react-three/drei";
+import { Text3D, useTexture } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
@@ -10,8 +10,10 @@ export default function EarthModel() {
     roughnessMap: "/specularClouds.jpg",
   });
   const [scale, setScale] = useState(1);
+  const [hovered, setHovered] = useState(false);
   const { size } = useThree();
 
+  const textRef = useRef<THREE.Mesh>(null!);
   const meshRef = useRef<THREE.Mesh>(null!);
 
   useEffect(() => {
@@ -36,12 +38,19 @@ export default function EarthModel() {
       } else {
         meshRef.current.visible = false;
       }
-
-      meshRef.current.rotation.y += 0.002;
+      if (!hovered) {
+        meshRef.current.rotation.y += 0.002;
+      }
     }
   });
   return (
-    <mesh ref={meshRef} position={[8, -10, -20]} scale={[scale, scale, scale]}>
+    <mesh
+      ref={meshRef}
+      position={[8, -10, -20]}
+      scale={[scale, scale, scale]}
+      onPointerOver={() => setHovered(true)}
+      onPointerOut={() => setHovered(false)}
+    >
       {" "}
       <sphereGeometry args={[3, 64, 64]} />
       <meshStandardMaterial
@@ -52,7 +61,7 @@ export default function EarthModel() {
         transparent={true}
         opacity={0}
         emissive="#0f0f0f"
-        emissiveIntensity={1}
+        emissiveIntensity={0.7}
       />
     </mesh>
   );

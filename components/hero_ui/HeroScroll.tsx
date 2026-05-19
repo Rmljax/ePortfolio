@@ -1,46 +1,71 @@
 "use client";
 
 import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
-import { Text, Text3D } from "@react-three/drei";
+import { useEffect, useRef, useState } from "react";
+import { Text, Text3D, useCursor } from "@react-three/drei";
+import { Vector3 } from "three";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/all";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 export default function HeroScroll() {
   const groupRef = useRef<any>(null!);
   const arrowRef = useRef<any>(null!);
+  const [hovered, setHovered] = useState(false);
   const { camera, size } = useThree();
 
-  useFrame((state) => {
-    const bobbing = -2 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
-    groupRef.current.position.y = -2 + bobbing;
-    if (size.width <= 320) {
-      groupRef.current.position.x = -0.9;
-      groupRef.current.position.y = -5.2;
-    } else if (size.width <= 375) {
-      groupRef.current.position.x = -1.2;
-      groupRef.current.position.y = -5.2;
-    } else if (size.width <= 596) {
-      groupRef.current.position.x = -1.4;
-      groupRef.current.position.y = -5.2;
-    } else if (size.width <= 768) {
-      groupRef.current.position.x = -3;
-      groupRef.current.position.y = -5.2;
-    } else if (size.width <= 1024) {
-      groupRef.current.position.x = -4;
-      groupRef.current.position.y = -5.2;
-    } else if (size.width <= 1440) {
-      groupRef.current.position.x = -5;
-      groupRef.current.position.y = -5.2;
-    } else if (size.width <= 2560) {
-      groupRef.current.position.x = -7;
-      groupRef.current.position.y = -5.2;
+  useCursor(hovered);
+
+  function scrollDown() {
+    const st = ScrollTrigger.getById("camera-scroll");
+    if (st) {
+      const totalDistance = st.end - st.start;
+      const secondPageScroll = st.start + totalDistance * 0.25;
+      gsap.to(window, {
+        duration: 1.2,
+        scrollTo: secondPageScroll,
+        ease: "power2.inOut",
+      });
     }
+  }
+
+  useFrame((state) => {
+    const time = state.clock.elapsedTime;
+    let targetX = -8; // Default
+    let baseY = -5.2;
+
+    // Responsive logic
+    if (size.width <= 320) targetX = -0.9;
+    else if (size.width <= 375) targetX = -1.2;
+    else if (size.width <= 596) targetX = -1.4;
+    else if (size.width <= 768) targetX = -3;
+    else if (size.width <= 1024) targetX = -4;
+    else if (size.width <= 1440) targetX = -5;
+    else if (size.width <= 2560) targetX = -7;
+
+    // Apply positions: Base + Sine Wave for bobbing
+    groupRef.current.position.x = targetX;
+    groupRef.current.position.y = baseY + Math.sin(time * 2) * 0.1;
 
     if (camera.position.y > -4) {
       arrowRef.current.rotation.y += 0.02;
     }
   });
   return (
-    <group ref={groupRef} position={[-8, 0, 0]}>
+    <group
+      ref={groupRef}
+      position={[-8, 0, 0]}
+      onClick={scrollDown}
+      onPointerOver={() => (camera.position.y === 0 ? setHovered(true) : null)}
+      onPointerOut={() => setHovered(false)}
+      scale={hovered ? 1.03 : 1}
+    >
+      <mesh rotation={[0, 0.5, -0.02]}>
+        <boxGeometry args={[3, 1.3, 1]} />
+        <meshStandardMaterial transparent={true} opacity={0} />
+      </mesh>
       <Text3D
         rotation={[0, 0.4, 0]}
         font="/fonts/michroma_regular.json"
@@ -49,7 +74,7 @@ export default function HeroScroll() {
       >
         EXPLORE
         <meshStandardMaterial
-          color={"#bae6fd"}
+          color={hovered ? "#ffffff" : "#bae6fd"}
           emissive={"#bae6fd"}
           emissiveIntensity={0.8}
           roughness={0.3}
@@ -58,7 +83,7 @@ export default function HeroScroll() {
       <mesh ref={arrowRef} rotation={[Math.PI, 0, 0]} position={[0, 0, 0]}>
         <coneGeometry args={[0.2, 0.4, 3]} />
         <meshStandardMaterial
-          color={"#bae6fd"}
+          color={hovered ? "#ffffff" : "#bae6fd"}
           emissive={"#bae6fd"}
           emissiveIntensity={0.8}
         />

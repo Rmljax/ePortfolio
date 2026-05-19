@@ -1,6 +1,6 @@
 "use client";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { Fragment, Suspense, useEffect, useRef, useState } from "react";
 import HeroParticles from "./HeroParticles";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import HeroCube from "./HeroCube";
@@ -13,6 +13,12 @@ import CubieProjects from "./CubieProjects";
 import * as THREE from "three";
 import EarthModel from "./EarthModel";
 import FinalScroll from "./FinalScroll";
+import ScrollTwo from "./ScrollTwo";
+import ScrollThree from "./ScrollThree";
+import { div } from "three/tsl";
+import Image from "next/image";
+import { projects } from "../../data/projects";
+import ProjectDescription from "./ProjectDescription";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,6 +30,7 @@ export default function HeroCanvas() {
   const [overlayPos, setOverlayPos] = useState({ x: 0, y: 0 });
   const [overlaySize, setOverlaySize] = useState({ w: 0, h: 0 });
   const [mounted, setMounted] = useState(false);
+  const [activeProject, setActiveProject] = useState<any>(null);
 
   useEffect(() => {
     const asp = window.innerWidth / window.innerHeight;
@@ -51,18 +58,14 @@ export default function HeroCanvas() {
         <Canvas
           camera={{ position: [0, 0, 15], fov: 50 }}
           eventSource={eventSource}
+          raycaster={{ far: 100 }}
         >
           <CameraController xPos={cubeX} />
           <color attach="background" args={["#020618"]} />
           <HeroParticles count={2000} color={"#6478ba"} size={0.05} />
           <HeroParticles count={2000} color={"#bae6fd"} size={0.1} />
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} intensity={2} />
-          <pointLight
-            position={[-10, -10, -10]}
-            intensity={1}
-            color={"#38bdf8"}
-          />
+          <ambientLight intensity={0.6} />
+
           <HeroCube xPos={cubeX} />
           <EarthModel />
           <OverlayTracker
@@ -71,8 +74,10 @@ export default function HeroCanvas() {
             setOverlaySize={setOverlaySize}
           />
           <HeroScroll />
+          <ScrollTwo />
+          <ScrollThree xPos={cubeX} />
           <FinalScroll />
-          <pointLight position={[15, -5, -15]} intensity={2} color="#ffffff" />
+          <pointLight position={[15, -7, -15]} intensity={2} color="#ffffff" />
           <EffectComposer>
             <Bloom
               intensity={1.5}
@@ -92,8 +97,8 @@ export default function HeroCanvas() {
           <HeroTyping />
         </section>
         <section className="h-screen flex items-center p-10 text-white">
-          <div className="flex -mt-20 md:m-auto space-x-100 h-3/4">
-            <div className="text-center flex flex-col md:w-2/3 m-auto rounded-2xl p-8 border border-[rgba(186,230,253,0.1)] animate-shadow-pulse shadow-[0_0_50px_10px_rgba(186,230,253,0.4)] bg-[rgba(186,230,253,0.05)] backdrop-blur-[2px]">
+          <div className=" -mt-20 md:m-auto h-fit md:w-2/3 rounded-2xl shadow-[inset_0_0_10px_rgba(186,230,253,0.4)]">
+            <div className="text-center flex flex-col m-auto rounded-2xl p-8   shadow-[0_0_50px_10px_rgba(186,230,253,0.4)] bg-[rgba(186,230,253,0.05)] backdrop-blur-sm">
               <h1 className="text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
                 Who I am:
               </h1>
@@ -113,39 +118,68 @@ export default function HeroCanvas() {
             </div>
           </div>
         </section>
-        <section className="h-screen p-10 text-white">
+        <section className="h-screen p-10 text-white" id="target-first">
           <h1 className="ml-[4%] mt-[2%] text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
             What I do:
           </h1>
         </section>
         <section className="h-screen flex p-10 text-white">
-          <h1 className="mx-auto mt-[4%] text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
+          <h1 className="mx-auto h-fit mt-[4%] text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
             Where to find me:
           </h1>
         </section>
         <section className="h-screen flex items-center p-10 text-white"></section>
       </div>
       {mounted && (
-        <div className="fixed inset-0 pointer-events-none z-[100]">
+        <div className="fixed inset-0 pointer-events-none transition ease-in-out z-100">
           <div
             className="absolute pointer-events-none"
             style={{
               left: `${overlayPos.x}px`,
               top: `${overlayPos.y}px`,
-              width: `${overlaySize.w}px`,
-              height: `${overlaySize.h}px`,
+              width: `${overlaySize.w * 1.01}px`,
+              height: `${overlaySize.h * 1.01}px`,
               transform: `translate(-50%, -50%)`,
               willChange: "left, top, transform",
               transition: "none",
             }}
           >
             <div className="grid grid-cols-3 gap-2 w-full h-full pointer-events-auto">
-              {[...Array(9)].map((_, i) => (
+              {projects.map((project, i) => (
                 <div
                   key={i}
-                  className="pointer-events-auto m-[11%] bg-white/0 border border-[rgba(186,230,253,0.2)] shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.3)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] transition-all cursor-pointer"
-                />
+                  className="pointer-events-auto m-[11%] bg-white/0  shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.3)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] transition-all cursor-pointer group"
+                  onClick={() => {
+                    setActiveProject(project);
+                  }}
+                >
+                  <Image
+                    src={`${project.image}`}
+                    width={100}
+                    height={100}
+                    alt="day"
+                    className=" shadow-[inset_0_0_10px_rgba(186,230,253,0.4)] w-full h-full m-auto blur-sm opacity-50 hover:opacity-70 hover:blur-none transition ease-in-out"
+                  />
+                  <h2
+                    className="absolute pointer-events-none opacity-0 group-hover:opacity-100 text-[#bae6fd] text-md md:text-lg xl:text-xl 2xl:text-2xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8] transition ease-in-out w-100 duration-200"
+                    style={{
+                      top: `${overlayPos.y - overlaySize.h / 2}px`,
+                      left: `${overlayPos.x - overlaySize.w / 3}px`,
+                    }}
+                  >
+                    {project.title}
+                  </h2>
+                </div>
               ))}{" "}
+              <ProjectDescription
+                project={activeProject}
+                width={overlaySize.w}
+                height={overlaySize.h}
+                open={!!activeProject}
+                setOpen={(val) => {
+                  if (!val) setActiveProject(null);
+                }}
+              />
             </div>
           </div>
         </div>

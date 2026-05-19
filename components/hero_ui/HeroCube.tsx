@@ -206,7 +206,6 @@ export default function HeroCube({ xPos }: HeroCubeProps) {
     } else {
       setScale(1.3);
     }
-    console.log(xPos);
   }, [size]);
 
   useFrame(() => {
