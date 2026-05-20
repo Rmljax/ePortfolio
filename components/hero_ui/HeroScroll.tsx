@@ -8,8 +8,9 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-
+if (typeof window !== undefined) {
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+}
 export default function HeroScroll() {
   const groupRef = useRef<any>(null!);
   const arrowRef = useRef<any>(null!);
@@ -19,6 +20,7 @@ export default function HeroScroll() {
   useCursor(hovered);
 
   function scrollDown() {
+    if (typeof window === "undefined") return;
     const st = ScrollTrigger.getById("camera-scroll");
     if (st) {
       const totalDistance = st.end - st.start;
@@ -28,10 +30,17 @@ export default function HeroScroll() {
         scrollTo: secondPageScroll,
         ease: "power2.inOut",
       });
+    } else {
+      gsap.to(window, {
+        duration: 1.2,
+        scrollTo: window.innerHeight * 0.5,
+        ease: "power2.inOut",
+      });
     }
   }
 
   useFrame((state) => {
+    if (!groupRef.current || !arrowRef.current) return;
     const time = state.clock.elapsedTime;
     let targetX = -8; // Default
     let baseY = -5.2;
@@ -57,9 +66,18 @@ export default function HeroScroll() {
     <group
       ref={groupRef}
       position={[-8, 0, 0]}
-      onClick={scrollDown}
-      onPointerOver={() => (camera.position.y === 0 ? setHovered(true) : null)}
-      onPointerOut={() => setHovered(false)}
+      onClick={(e) => {
+        e.stopPropagation();
+        scrollDown();
+      }}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        camera.position.y === 0 ? setHovered(true) : null;
+      }}
+      onPointerOut={(e) => {
+        e.stopPropagation();
+        setHovered(false);
+      }}
       scale={hovered ? 1.03 : 1}
     >
       <mesh rotation={[0, 0.5, -0.02]}>
