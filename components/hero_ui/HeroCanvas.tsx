@@ -176,7 +176,7 @@ export default function HeroCanvas() {
                 width={overlaySize.w}
                 height={overlaySize.h}
                 open={!!activeProject}
-                setOpen={(val) => {
+                setOpen={(val: any) => {
                   if (!val) setActiveProject(null);
                 }}
               />
