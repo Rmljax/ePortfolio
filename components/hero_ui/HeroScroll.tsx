@@ -26,14 +26,14 @@ export default function HeroScroll() {
       const totalDistance = st.end - st.start;
       const secondPageScroll = st.start + totalDistance * 0.25;
       gsap.to(window, {
-        duration: 1.2,
+        duration: 3,
         scrollTo: secondPageScroll,
         ease: "power2.inOut",
       });
     } else {
       gsap.to(window, {
-        duration: 1.2,
-        scrollTo: window.innerHeight * 0.5,
+        duration: 3,
+        scrollTo: window.innerHeight * 1.035,
         ease: "power2.inOut",
       });
     }
