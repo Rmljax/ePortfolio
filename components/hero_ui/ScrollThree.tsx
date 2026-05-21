@@ -6,28 +6,56 @@ import * as THREE from "three";
 import { ScrollTrigger } from "gsap/all";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { gsap } from "gsap";
-
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-
+if (typeof window !== undefined) {
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+}
 interface ScrollThreeProps {
   xPos: number;
 }
 
 export default function ScrollThree({ xPos }: ScrollThreeProps) {
-  const [hovered, setHovered] = useState(false);
+  const [downHovered, setDownHovered] = useState(false);
+  const [upHovered, setUpHovered] = useState(false);
   const groupRef = useRef<THREE.Group>(null!);
   const [visible, setVisible] = useState(false);
   const { camera } = useThree();
-  useCursor(hovered);
+  useCursor(downHovered);
+  useCursor(upHovered);
 
-  function scrollLeft() {
+  function scrollDown() {
+    if (typeof window === "undefined") return;
     const st = ScrollTrigger.getById("camera-scroll");
     if (st) {
       const totalDistance = st.end - st.start;
-      const secondPageScroll = st.start + totalDistance * 0.75;
+      const fourthPageScroll = st.start + totalDistance * 0.75;
       gsap.to(window, {
-        duration: 1.2,
+        duration: 2,
+        scrollTo: fourthPageScroll,
+        ease: "power2.inOut",
+      });
+    } else {
+      gsap.to(window, {
+        duration: 2,
+        scrollTo: window.innerHeight * 3.035,
+        ease: "power2.inOut",
+      });
+    }
+  }
+  function scrollUp() {
+    if (typeof window === "undefined") return;
+    const st = ScrollTrigger.getById("camera-scroll");
+    if (st) {
+      const totalDistance = st.end - st.start;
+      const secondPageScroll = st.start + totalDistance * 0.25;
+      gsap.to(window, {
+        duration: 2,
         scrollTo: secondPageScroll,
+        ease: "power2.inOut",
+      });
+    } else {
+      gsap.to(window, {
+        duration: 2,
+        scrollTo: window.innerHeight * 1.035,
         ease: "power2.inOut",
       });
     }
@@ -44,20 +72,32 @@ export default function ScrollThree({ xPos }: ScrollThreeProps) {
     groupRef.current.position.y = -2.7 + Math.sin(time * 2) * 0.1;
   });
   return (
-    <group
-      ref={groupRef}
-      position={[5, -2.7, 0]}
-      rotation={[Math.PI, 0, 0]}
-      onClick={scrollLeft}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-      scale={hovered ? 1.05 : 1}
-      visible={visible}
-    >
-      <mesh>
+    <group ref={groupRef} position={[5, -2.7, 0]} visible={visible}>
+      <mesh
+        position={[1.5, 0, 0]}
+        rotation={[Math.PI, 0, 0]}
+        onClick={scrollDown}
+        onPointerOver={() => setDownHovered(true)}
+        onPointerOut={() => setDownHovered(false)}
+        scale={downHovered ? 1.05 : 1}
+      >
         <coneGeometry args={[0.1, 0.2, 3]} />
         <meshStandardMaterial
-          color={hovered ? "#ffffff" : "#bae6fd"}
+          color={downHovered ? "#ffffff" : "#bae6fd"}
+          emissive={"#bae6fd"}
+          emissiveIntensity={0.8}
+        />
+      </mesh>
+      <mesh
+        position={[-1.5, 0, 0]}
+        onClick={scrollUp}
+        onPointerOver={() => setUpHovered(true)}
+        onPointerOut={() => setUpHovered(false)}
+        scale={upHovered ? 1.05 : 1}
+      >
+        <coneGeometry args={[0.1, 0.2, 3]} />
+        <meshStandardMaterial
+          color={upHovered ? "#ffffff" : "#bae6fd"}
           emissive={"#bae6fd"}
           emissiveIntensity={0.8}
         />

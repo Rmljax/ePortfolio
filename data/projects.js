@@ -6,7 +6,7 @@ export const projects = [
     link: "google.com",
   },
   {
-    title: "Project Name",
+    title: "Project",
     image: "/day.jpg",
     description: "This is information about the project",
     link: "google.com",

@@ -7,36 +7,91 @@ import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { ScrollTrigger } from "gsap/all";
 import { gsap } from "gsap";
 import * as THREE from "three";
+import { Exo_2 } from "next/font/google";
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+if (typeof window !== undefined) {
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+}
 
 export default function FinalScroll() {
-  const arrowRef = useRef<any>(null!);
+  const arrowUpRef = useRef<THREE.Mesh>(null!);
+  const arrowDownRef = useRef<THREE.Mesh>(null!);
   const groupRef = useRef<THREE.Group>(null!);
   const [scale, setScale] = useState(4);
   const [isVisible, setIsVisible] = useState(false);
-  const [hovered, setHovered] = useState(false);
+  const [upHovered, setUpHovered] = useState(false);
+  const [downHovered, setDownHovered] = useState(false);
   const { camera, size } = useThree();
 
-  useCursor(hovered);
+  useCursor(upHovered);
+  useCursor(downHovered);
 
   function scrollDown() {
+    if (typeof window === "undefined") return;
     console.log("Scroll Clicked");
     const st = ScrollTrigger.getById("camera-scroll");
-    if (st) {
-      // Go directly to the total end of the timeline's scroll range
-      gsap.to(window, {
-        duration: 1.5,
-        // Pass {y: st.end} to resolve the 'Window' error
-        scrollTo: { y: st.end, autoKill: true },
-        ease: "power2.inOut",
-      });
+    if (camera.position.z === 10) {
+      if (st) {
+        gsap.to(window, {
+          duration: 2,
+
+          scrollTo: { y: st.end, autoKill: true },
+          ease: "power2.inOut",
+        });
+      } else {
+        gsap.to(window, {
+          duration: 2,
+          scrollTo: window.innerHeight * 4.035,
+          ease: "power2.inOut",
+        });
+      }
+    }
+  }
+
+  function scrollUp() {
+    if (typeof window === "undefined") return;
+
+    const st = ScrollTrigger.getById("camera-scroll");
+    if (camera.position.z === 10) {
+      if (st) {
+        const totalDistance = st.end - st.start;
+        const thirdPageScroll = st.start + totalDistance * 0.5;
+        gsap.to(window, {
+          duration: 2,
+          scrollTo: thirdPageScroll,
+          ease: "power2.inOut",
+        });
+      } else {
+        gsap.to(window, {
+          duration: 2,
+          scrollTo: window.innerHeight * 2.035,
+          ease: "power2.inOut",
+        });
+      }
+    }
+    if (camera.position.z === -10) {
+      if (st) {
+        const totalDistance = st.end - st.start;
+        const fourthPageScroll = st.start + totalDistance * 0.75;
+        gsap.to(window, {
+          duration: 2,
+          scrollTo: fourthPageScroll,
+          ease: "power2.inOut",
+        });
+      } else {
+        gsap.to(window, {
+          duration: 2,
+          scrollTo: window.innerHeight * 3.035,
+          ease: "power2.inOut",
+        });
+      }
     }
   }
 
   useFrame((state) => {
     const bobbing = -2 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
-    arrowRef.current.position.y = -4 + bobbing;
+
+    arrowDownRef.current.position.y = -4 + bobbing;
 
     if (Math.abs(camera.position.x - 8) < 0.1 && camera.position.y === -4) {
       setIsVisible(true);
@@ -44,32 +99,49 @@ export default function FinalScroll() {
       setIsVisible(false);
     }
 
-    arrowRef.current.rotation.y += 0.02;
-    if (camera.position.z < 10) {
+    arrowUpRef.current.rotation.y += 0.02;
+    arrowDownRef.current.rotation.y -= 0.02;
+    if (camera.position.z <= 10) {
       setScale(Math.max(1, (camera.position.z * 3) / 20 + 2.5));
-      groupRef.current.position.z = -4;
+      groupRef.current.position.z = Math.max(-2, camera.position.z / 20 - 1.5);
+      arrowUpRef.current.position.y =
+        Math.max(-5.4, camera.position.z * 0.07 - 4.7) + 2 + bobbing;
+    } else {
+      groupRef.current.position.z = Math.max(-2, camera.position.z / 10);
+      arrowUpRef.current.position.y = -4;
     }
   });
   return (
-    <group
-      position={[8, -1, -20]}
-      ref={groupRef}
-      // Handle the clicks on the parent GROUP
-      onClick={scrollDown}
-      onPointerOver={() => (camera.position.z === 10 ? setHovered(true) : null)}
-      onPointerOut={() => setHovered(false)}
-      scale={hovered ? 1.01 : 1}
-    >
+    <group position={[8, -1, -20]} ref={groupRef}>
       <mesh
-        ref={arrowRef}
+        ref={arrowDownRef}
         rotation={[Math.PI, Math.PI, 0]}
-        position={[0, 0, -20]}
-        scale={scale}
+        position={[0, -6, -20]}
+        onClick={scrollDown}
+        onPointerOver={() => setDownHovered(true)}
+        onPointerOut={() => setDownHovered(false)}
+        scale={downHovered ? scale * 1.04 : scale}
         visible={isVisible}
       >
         <coneGeometry args={[0.2, 0.4, 3]} />
         <meshStandardMaterial
-          color={hovered ? "#ffffff" : "#bae6fd"}
+          color={downHovered ? "#ffffff" : "#bae6fd"}
+          emissive={"#bae6fd"}
+          emissiveIntensity={0.8}
+        />
+      </mesh>
+      <mesh
+        ref={arrowUpRef}
+        position={[0, -4, -20]}
+        onClick={scrollUp}
+        onPointerOver={() => setUpHovered(true)}
+        onPointerOut={() => setUpHovered(false)}
+        scale={upHovered ? scale * 1.04 : scale}
+        visible={isVisible}
+      >
+        <coneGeometry args={[0.2, 0.4, 3]} />
+        <meshStandardMaterial
+          color={upHovered ? "#ffffff" : "#bae6fd"}
           emissive={"#bae6fd"}
           emissiveIntensity={0.8}
         />
