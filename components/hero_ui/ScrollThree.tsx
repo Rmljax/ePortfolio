@@ -15,12 +15,16 @@ interface ScrollThreeProps {
 
 export default function ScrollThree({ xPos }: ScrollThreeProps) {
   const [downHovered, setDownHovered] = useState(false);
-  const [upHovered, setUpHovered] = useState(false);
+  const [leftHovered, setLeftHovered] = useState(false);
+  const [leftX, setLeftX] = useState(-1.5);
+  const [downX, setDownX] = useState(1.5);
+  const leftArrowRef = useRef<THREE.Mesh>(null!);
+  const downArrowRef = useRef<THREE.Mesh>(null!);
   const groupRef = useRef<THREE.Group>(null!);
   const [visible, setVisible] = useState(false);
   const { camera } = useThree();
   useCursor(downHovered);
-  useCursor(upHovered);
+  useCursor(leftHovered);
 
   function scrollDown() {
     if (typeof window === "undefined") return;
@@ -41,7 +45,7 @@ export default function ScrollThree({ xPos }: ScrollThreeProps) {
       });
     }
   }
-  function scrollUp() {
+  function scrollLeft() {
     if (typeof window === "undefined") return;
     const st = ScrollTrigger.getById("camera-scroll");
     if (st) {
@@ -70,12 +74,15 @@ export default function ScrollThree({ xPos }: ScrollThreeProps) {
     }
 
     groupRef.current.position.y = -2.7 + Math.sin(time * 2) * 0.1;
+    leftArrowRef.current.position.x = leftX + Math.sin(time * 2) * 0.05;
+    downArrowRef.current.position.x = downX - Math.sin(time * 2) * 0.05;
   });
   return (
-    <group ref={groupRef} position={[5, -2.7, 0]} visible={visible}>
+    <group ref={groupRef} position={[xPos, -2.7, 0]} visible={visible}>
       <mesh
-        position={[1.5, 0, 0]}
-        rotation={[Math.PI, 0, 0]}
+        ref={downArrowRef}
+        position={[downX, 0, 0]}
+        rotation={[0, 0, -2.5]}
         onClick={scrollDown}
         onPointerOver={() => setDownHovered(true)}
         onPointerOut={() => setDownHovered(false)}
@@ -85,21 +92,23 @@ export default function ScrollThree({ xPos }: ScrollThreeProps) {
         <meshStandardMaterial
           color={downHovered ? "#ffffff" : "#bae6fd"}
           emissive={"#bae6fd"}
-          emissiveIntensity={0.8}
+          emissiveIntensity={downHovered ? 1 : 0.8}
         />
       </mesh>
       <mesh
-        position={[-1.5, 0, 0]}
-        onClick={scrollUp}
-        onPointerOver={() => setUpHovered(true)}
-        onPointerOut={() => setUpHovered(false)}
-        scale={upHovered ? 1.05 : 1}
+        ref={leftArrowRef}
+        position={[leftX, 0, 0]}
+        rotation={[0, 0, 2.5]}
+        onClick={scrollLeft}
+        onPointerOver={() => setLeftHovered(true)}
+        onPointerOut={() => setLeftHovered(false)}
+        scale={leftHovered ? 1.05 : 1}
       >
         <coneGeometry args={[0.1, 0.2, 3]} />
         <meshStandardMaterial
-          color={upHovered ? "#ffffff" : "#bae6fd"}
+          color={leftHovered ? "#ffffff" : "#bae6fd"}
           emissive={"#bae6fd"}
-          emissiveIntensity={0.8}
+          emissiveIntensity={leftHovered ? 1 : 0.8}
         />
       </mesh>
     </group>

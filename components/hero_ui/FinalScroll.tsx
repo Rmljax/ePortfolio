@@ -127,7 +127,7 @@ export default function FinalScroll() {
         <meshStandardMaterial
           color={downHovered ? "#ffffff" : "#bae6fd"}
           emissive={"#bae6fd"}
-          emissiveIntensity={0.8}
+          emissiveIntensity={downHovered ? 1 : 0.8}
         />
       </mesh>
       <mesh
@@ -143,7 +143,7 @@ export default function FinalScroll() {
         <meshStandardMaterial
           color={upHovered ? "#ffffff" : "#bae6fd"}
           emissive={"#bae6fd"}
-          emissiveIntensity={0.8}
+          emissiveIntensity={upHovered ? 1 : 0.8}
         />
       </mesh>
     </group>

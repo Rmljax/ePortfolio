@@ -12,12 +12,18 @@ if (typeof window !== undefined) {
 }
 export default function ScrollThree() {
   const [rightHovered, setRightHovered] = useState(false);
-  const [leftHovered, setLeftHovered] = useState(false);
+  const [upHovered, setUpHovered] = useState(false);
   const [visible, setVisible] = useState(false);
+  const rightArrowRef = useRef<THREE.Mesh>(null!);
+  const upArrowRef = useRef<THREE.Mesh>(null!);
+  const [rightX, setRightX] = useState(7);
+  const [rightY, setRightY] = useState(0);
+  const [upX, setUpX] = useState(-7);
+  const [upY, setUpY] = useState(0);
   const groupRef = useRef<THREE.Group>(null!);
-  const { camera } = useThree();
+  const { camera, size } = useThree();
   useCursor(rightHovered);
-  useCursor(leftHovered);
+  useCursor(upHovered);
 
   function scrollRight() {
     if (typeof window === "undefined") return;
@@ -39,7 +45,7 @@ export default function ScrollThree() {
       });
     }
   }
-  function scrollLeft() {
+  function scrollUp() {
     if (typeof window === "undefined") return;
 
     const st = ScrollTrigger.getById("camera-scroll");
@@ -61,43 +67,83 @@ export default function ScrollThree() {
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
-    if (camera.position.y === -4) {
+    if (camera.position.y === -4 && camera.position.x === 0) {
       setVisible(true);
     } else {
       setVisible(false);
     }
-    groupRef.current.position.x = 9 + Math.sin(time * 2) * 0.1;
+    if (size.width <= 320) {
+      setRightX(2);
+      setUpX(-2);
+      setRightY(-12);
+      setUpY(-12);
+    } else if (size.width <= 375) {
+      setRightX(2);
+      setUpX(-2);
+      setRightY(-11);
+      setUpY(-11);
+    } else if (size.width <= 596) {
+      setRightX(1.3);
+      setUpX(-1.3);
+      setRightY(1);
+      setUpY(1);
+    } else if (size.width <= 768) {
+      setRightX(2);
+      setUpX(-2);
+      setRightY(0);
+      setUpY(0);
+    } else if (size.width <= 1024) {
+      setRightX(4);
+      setUpX(-4);
+      setRightY(0);
+      setUpY(0);
+    } else if (size.width <= 1440) {
+      setRightX(6);
+      setUpX(-6);
+      setRightY(1);
+      setUpY(1);
+    } else if (size.width <= 2560) {
+      setRightX(7);
+      setUpX(-7);
+      setRightY(1);
+      setUpY(1);
+    }
+
+    rightArrowRef.current.position.y = rightY + Math.sin(time * 2) * 0.1;
+    upArrowRef.current.position.y = upY + Math.sin(time * 2) * 0.1;
   });
   return (
-    <group ref={groupRef} position={[0, -15, 0]} visible={visible}>
+    <group ref={groupRef} position={[0, -7, 0]} visible={visible}>
       <mesh
-        position={[0, 0, 0]}
-        rotation={[0.5, 0, (3 * Math.PI) / 2]}
+        ref={rightArrowRef}
+        position={[rightX, rightY, 0]}
+        rotation={[0.1, 0.1, 0]}
         scale={rightHovered ? 1.05 : 1}
         onClick={scrollRight}
         onPointerOver={() => setRightHovered(true)}
         onPointerOut={() => setRightHovered(false)}
       >
-        <coneGeometry args={[0.3, 0.5, 3]} />
+        <coneGeometry args={[0.2, 0.4, 3]} />
         <meshStandardMaterial
           color={rightHovered ? "#ffffff" : "#bae6fd"}
           emissive={"#bae6fd"}
-          emissiveIntensity={0.8}
+          emissiveIntensity={rightHovered ? 1 : 0.8}
         />
       </mesh>
       <mesh
-        position={[-18, 0, 0]}
-        rotation={[0.5, 0, -(3 * Math.PI) / 2]}
-        scale={leftHovered ? 1.05 : 1}
-        onClick={scrollLeft}
-        onPointerOver={() => setLeftHovered(true)}
-        onPointerOut={() => setLeftHovered(false)}
+        ref={upArrowRef}
+        position={[upX, upY, 0]}
+        rotation={[-0.1, -0.1, 0]}
+        scale={upHovered ? 1.05 : 1}
+        onClick={scrollUp}
+        onPointerOver={() => setUpHovered(true)}
+        onPointerOut={() => setUpHovered(false)}
       >
-        <coneGeometry args={[0.3, 0.5, 3]} />
+        <coneGeometry args={[0.2, 0.4, 3]} />
         <meshStandardMaterial
-          color={leftHovered ? "#ffffff" : "#bae6fd"}
+          color={upHovered ? "#ffffff" : "#bae6fd"}
           emissive={"#bae6fd"}
-          emissiveIntensity={0.8}
+          emissiveIntensity={upHovered ? 1 : 0.8}
         />
       </mesh>
     </group>

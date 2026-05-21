@@ -38,9 +38,8 @@ export default function EarthModel() {
       } else {
         meshRef.current.visible = false;
       }
-      if (!hovered) {
-        meshRef.current.rotation.y += 0.002;
-      }
+
+      meshRef.current.rotation.y += 0.002;
     }
   });
   return (

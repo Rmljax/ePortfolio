@@ -31,6 +31,8 @@ export default function HeroCanvas() {
   const [overlaySize, setOverlaySize] = useState({ w: 0, h: 0 });
   const [mounted, setMounted] = useState(false);
   const [activeProject, setActiveProject] = useState<any>(null);
+  const [twoVisible, setTwoVisible] = useState(false);
+  const sectionTwoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const asp = window.innerWidth / window.innerHeight;
@@ -50,6 +52,34 @@ export default function HeroCanvas() {
 
   useEffect(() => {
     setEventSource(document.body);
+  }, []);
+
+  useEffect(() => {
+    if (!sectionTwoRef.current) return;
+
+    const element = sectionTwoRef.current;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        element,
+        {
+          y: 0,
+          opacity: 1,
+        },
+        {
+          y: 800,
+          opacity: 0,
+          ease: "power1.inOut",
+          scrollTrigger: {
+            trigger: element,
+            start: "bottom+=100 bottom",
+            end: "bottom top+=200",
+            scrub: true,
+          },
+        },
+      );
+    });
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -73,6 +103,7 @@ export default function HeroCanvas() {
             setMounted={setMounted}
             setOverlaySize={setOverlaySize}
           />
+          <SetSectionsVisible setTwoVisible={setTwoVisible} />
           <HeroScroll />
           <ScrollTwo />
           <ScrollThree xPos={cubeX} />
@@ -97,26 +128,31 @@ export default function HeroCanvas() {
           <HeroTyping />
         </section>
         <section className="h-screen flex items-center p-10 text-white">
-          <div className=" -mt-20 md:m-auto h-fit md:w-2/3 rounded-2xl shadow-[inset_0_0_10px_rgba(186,230,253,0.4)]">
-            <div className="text-center flex flex-col m-auto rounded-2xl p-8   shadow-[0_0_50px_10px_rgba(186,230,253,0.4)] bg-[rgba(186,230,253,0.05)] backdrop-blur-sm">
-              <h1 className="text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
-                Who I am:
-              </h1>
-              <p className="text-[#bae6fd] text-xs md:text-sm xl:text-lg 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8] flex flex-col space-y-4 mt-4 ml-4">
-                <br />
-                I’m a Frontend Engineer with a background in mathematics and
-                computer science education. After 5+ years of breaking down
-                complex logic for students, I now apply that same architectural
-                mindset to building immersive web experiences.
-                <br />
-                <br />I specialize in the intersection of performance and
-                aesthetics—using React, Three.js, and GSAP to turn abstract
-                concepts into interactive reality. My transition from educator
-                to developer wasn’t just a career change; it was an evolution of
-                my passion for logic, problem-solving, and clean design.
-              </p>
+          {true && (
+            <div
+              ref={sectionTwoRef}
+              className="md:m-auto h-fit md:w-2/3 rounded-2xl shadow-[inset_0_0_10px_rgba(186,230,253,0.4)]"
+            >
+              <div className="text-center flex flex-col m-auto rounded-2xl p-8   shadow-[0_0_50px_10px_rgba(186,230,253,0.4)] bg-[rgba(186,230,253,0.05)] backdrop-blur-sm">
+                <h1 className="text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
+                  Who I am:
+                </h1>
+                <p className="text-[#bae6fd] text-xs md:text-sm xl:text-lg 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8] flex flex-col space-y-4 mt-4 ml-4">
+                  <br />
+                  I’m a Frontend Engineer with a background in mathematics and
+                  computer science education. After 5+ years of breaking down
+                  complex logic for students, I now apply that same
+                  architectural mindset to building immersive web experiences.
+                  <br />
+                  <br />I specialize in the intersection of performance and
+                  aesthetics—using React, Three.js, and GSAP to turn abstract
+                  concepts into interactive reality. My transition from educator
+                  to developer wasn’t just a career change; it was an evolution
+                  of my passion for logic, problem-solving, and clean design.
+                </p>
+              </div>
             </div>
-          </div>
+          )}
         </section>
         <section className="h-screen p-10 text-white" id="target-first">
           <h1 className="ml-[4%] mt-[2%] text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
@@ -238,5 +274,22 @@ function OverlayTracker({
     setOverlayPos({ x: (minX + maxX) / 2, y: (minY + maxY) / 2 });
     setOverlaySize({ w: maxX - minX, h: maxY - minY });
   }, 1);
+  return null;
+}
+
+function SetSectionsVisible({
+  setTwoVisible,
+}: {
+  setTwoVisible: (twoVisible: boolean) => void;
+}) {
+  const { camera } = useThree();
+
+  useFrame(() => {
+    if (camera.position.y === -4) {
+      setTwoVisible(true);
+    } else {
+      setTwoVisible(false);
+    }
+  });
   return null;
 }
