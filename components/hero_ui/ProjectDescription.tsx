@@ -41,8 +41,27 @@ export default function ProjectDescription({
             width={`${Math.round(width / 2)}`}
             height={`${Math.round(height / 2)}`}
             alt="day"
-            className="mx-auto mt-6"
+            className="mx-auto mt-6 rounded-lg shadow-[0_0_50px_10px_rgba(186,230,253,0.4)]"
           />
+          <p className="mt-4 text-[#bae6fd] text-sm md:text-md xl:text-lg 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
+            {project.description}
+          </p>
+          <div className="absolute bottom-4 flex justify-evenly">
+            <a
+              className=" text-[#bae6fd] text-sm md:text-md xl:text-lg 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]"
+              href={project.gitLink}
+              target="_blank"
+            >
+              GitHub
+            </a>
+            <a
+              className=" text-[#bae6fd] text-sm md:text-md xl:text-lg 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]"
+              href={project.liveLink}
+              target="_blank"
+            >
+              Site
+            </a>
+          </div>
         </div>
       ) : null}
     </div>

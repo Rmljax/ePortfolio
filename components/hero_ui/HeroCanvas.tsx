@@ -33,6 +33,7 @@ export default function HeroCanvas() {
   const [activeProject, setActiveProject] = useState<any>(null);
   const [twoVisible, setTwoVisible] = useState(false);
   const sectionTwoRef = useRef<HTMLDivElement>(null);
+  const sectionThreeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const asp = window.innerWidth / window.innerHeight;
@@ -55,13 +56,14 @@ export default function HeroCanvas() {
   }, []);
 
   useEffect(() => {
-    if (!sectionTwoRef.current) return;
+    if (!sectionTwoRef.current || !sectionThreeRef.current) return;
 
-    const element = sectionTwoRef.current;
+    const sectionTwoElement = sectionTwoRef.current;
+    const sectionThreeElement = sectionThreeRef.current;
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        element,
+        sectionTwoElement,
         {
           y: 0,
           opacity: 1,
@@ -71,14 +73,30 @@ export default function HeroCanvas() {
           opacity: 0,
           ease: "power1.inOut",
           scrollTrigger: {
-            trigger: element,
+            trigger: sectionTwoElement,
             start: "bottom+=100 bottom",
             end: "bottom top+=200",
             scrub: true,
           },
         },
       );
+      gsap.fromTo(
+        sectionThreeElement,
+        { y: -400, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          ease: "power1.inOut",
+          scrollTrigger: {
+            trigger: sectionThreeElement,
+            start: "top top",
+            end: "bottom center",
+            scrub: true,
+          },
+        },
+      );
     });
+
     return () => ctx.revert();
   }, []);
 
@@ -154,7 +172,11 @@ export default function HeroCanvas() {
             </div>
           )}
         </section>
-        <section className="h-screen p-10 text-white" id="target-first">
+        <section
+          ref={sectionThreeRef}
+          className="h-screen p-10 text-white"
+          id="target-first"
+        >
           <h1 className="ml-[4%] mt-[2%] text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
             What I do:
           </h1>
