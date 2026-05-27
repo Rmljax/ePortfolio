@@ -153,6 +153,7 @@ export default function HeroCube({ xPos }: HeroCubeProps) {
 
   const handleMove = (axis: number, slice: number, dir: number) => {
     if (isMoving.current) return;
+    if (!pivotRef.current) return;
     isMoving.current = true;
     pivotRef.current.rotation.set(0, 0, 0);
     pivotRef.current.updateMatrixWorld();

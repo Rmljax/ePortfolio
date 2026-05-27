@@ -1,20 +1,29 @@
-import { Text3D, useTexture } from "@react-three/drei";
+import { Text3D, useCursor, useTexture } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
-export default function EarthModel() {
+interface EarthModelProps {
+  setContactOpen: (contactOpen: boolean) => void;
+  contactOpen: boolean;
+  lightOn: boolean;
+}
+export default function EarthModel({
+  setContactOpen,
+  contactOpen,
+  lightOn,
+}: EarthModelProps) {
   const props = useTexture({
-    map: "/day.jpg",
+    map: contactOpen || !lightOn ? "/night.jpg" : "/day.jpg",
 
     roughnessMap: "/specularClouds.jpg",
   });
   const [scale, setScale] = useState(1);
   const [hovered, setHovered] = useState(false);
   const { size } = useThree();
-
-  const textRef = useRef<THREE.Mesh>(null!);
   const meshRef = useRef<THREE.Mesh>(null!);
+
+  useCursor(hovered);
 
   useEffect(() => {
     if (size.width <= 425) {
@@ -49,6 +58,7 @@ export default function EarthModel() {
       scale={[scale, scale, scale]}
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
+      onClick={() => setContactOpen(true)}
     >
       {" "}
       <sphereGeometry args={[3, 64, 64]} />
@@ -59,7 +69,7 @@ export default function EarthModel() {
         roughness={0.7}
         transparent={true}
         opacity={0}
-        emissive="#0f0f0f"
+        emissive={`${contactOpen || !lightOn ? "#010101" : "#0f0f0f"}`}
         emissiveIntensity={0.7}
       />
     </mesh>

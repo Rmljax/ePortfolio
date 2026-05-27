@@ -1,7 +1,7 @@
 "use client";
 
 import { ThreeElement, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Text, Text3D, useCursor } from "@react-three/drei";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { ScrollTrigger } from "gsap/all";
@@ -13,7 +13,10 @@ if (typeof window !== undefined) {
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 }
 
-export default function FinalScroll() {
+interface FinalScrollProps {
+  setLightOn: Dispatch<SetStateAction<boolean>>;
+}
+export default function FinalScroll({ setLightOn }: FinalScrollProps) {
   const arrowUpRef = useRef<THREE.Mesh>(null!);
   const arrowDownRef = useRef<THREE.Mesh>(null!);
   const groupRef = useRef<THREE.Group>(null!);
@@ -28,7 +31,7 @@ export default function FinalScroll() {
 
   function scrollDown() {
     if (typeof window === "undefined") return;
-    console.log("Scroll Clicked");
+
     const st = ScrollTrigger.getById("camera-scroll");
     if (camera.position.z === 10) {
       if (st) {
@@ -45,6 +48,8 @@ export default function FinalScroll() {
           ease: "power2.inOut",
         });
       }
+    } else {
+      setLightOn((prev) => !prev);
     }
   }
 

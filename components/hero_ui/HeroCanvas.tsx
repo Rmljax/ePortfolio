@@ -19,6 +19,8 @@ import { div } from "three/tsl";
 import Image from "next/image";
 import { projects } from "../../data/projects";
 import ProjectDescription from "./ProjectDescription";
+import AboutMe from "./AboutMe";
+import ContactForm from "./ContactForm";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,7 +33,8 @@ export default function HeroCanvas() {
   const [overlaySize, setOverlaySize] = useState({ w: 0, h: 0 });
   const [mounted, setMounted] = useState(false);
   const [activeProject, setActiveProject] = useState<any>(null);
-  const [twoVisible, setTwoVisible] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+  const [lightOn, setLightOn] = useState(true);
   const sectionTwoRef = useRef<HTMLDivElement>(null);
   const sectionThreeRef = useRef<HTMLDivElement>(null);
 
@@ -55,54 +58,9 @@ export default function HeroCanvas() {
     setEventSource(document.body);
   }, []);
 
-  useEffect(() => {
-    if (!sectionTwoRef.current || !sectionThreeRef.current) return;
-
-    const sectionTwoElement = sectionTwoRef.current;
-    const sectionThreeElement = sectionThreeRef.current;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        sectionTwoElement,
-        {
-          y: 0,
-          opacity: 1,
-        },
-        {
-          y: 800,
-          opacity: 0,
-          ease: "power1.inOut",
-          scrollTrigger: {
-            trigger: sectionTwoElement,
-            start: "bottom+=100 bottom",
-            end: "bottom top+=200",
-            scrub: true,
-          },
-        },
-      );
-      gsap.fromTo(
-        sectionThreeElement,
-        { y: -400, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          ease: "power1.inOut",
-          scrollTrigger: {
-            trigger: sectionThreeElement,
-            start: "top top",
-            end: "bottom center",
-            scrub: true,
-          },
-        },
-      );
-    });
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <>
-      <div className="fixed inset-0 h-screen w-full bg-slate-950 z-0">
+      <div className="fixed inset-0 h-screen w-full bg-slate-950 z-0 overflow-visible">
         <Canvas
           camera={{ position: [0, 0, 15], fov: 50 }}
           eventSource={eventSource}
@@ -115,18 +73,27 @@ export default function HeroCanvas() {
           <ambientLight intensity={0.6} />
 
           <HeroCube xPos={cubeX} />
-          <EarthModel />
+          <EarthModel
+            setContactOpen={setContactOpen}
+            contactOpen={contactOpen}
+            lightOn={lightOn}
+          />
           <OverlayTracker
             setOverlayPos={setOverlayPos}
             setMounted={setMounted}
             setOverlaySize={setOverlaySize}
           />
-          <SetSectionsVisible setTwoVisible={setTwoVisible} />
           <HeroScroll />
           <ScrollTwo />
           <ScrollThree xPos={cubeX} />
-          <FinalScroll />
-          <pointLight position={[15, -7, -15]} intensity={2} color="#ffffff" />
+          <FinalScroll setLightOn={setLightOn} />
+          {lightOn && (
+            <pointLight
+              position={[15, -7, -15]}
+              intensity={2}
+              color="#ffffff"
+            />
+          )}
           <EffectComposer>
             <Bloom
               intensity={1.5}
@@ -146,31 +113,29 @@ export default function HeroCanvas() {
           <HeroTyping />
         </section>
         <section className="h-screen flex items-center p-10 text-white">
-          {true && (
-            <div
-              ref={sectionTwoRef}
-              className="md:m-auto h-fit md:w-2/3 rounded-2xl shadow-[inset_0_0_10px_rgba(186,230,253,0.4)]"
-            >
-              <div className="text-center flex flex-col m-auto rounded-2xl p-8   shadow-[0_0_50px_10px_rgba(186,230,253,0.4)] bg-[rgba(186,230,253,0.05)] backdrop-blur-sm">
-                <h1 className="text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
-                  Who I am:
-                </h1>
-                <p className="text-[#bae6fd] text-xs md:text-sm xl:text-lg 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8] flex flex-col space-y-4 mt-4 ml-4">
-                  <br />
-                  I’m a Frontend Engineer with a background in mathematics and
-                  computer science education. After 5+ years of breaking down
-                  complex logic for students, I now apply that same
-                  architectural mindset to building immersive web experiences.
-                  <br />
-                  <br />I specialize in the intersection of performance and
-                  aesthetics—using React, Three.js, and GSAP to turn abstract
-                  concepts into interactive reality. My transition from educator
-                  to developer wasn’t just a career change; it was an evolution
-                  of my passion for logic, problem-solving, and clean design.
-                </p>
-              </div>
+          <div
+            ref={sectionTwoRef}
+            className="md:m-auto h-fit md:w-2/3 rounded-2xl shadow-[inset_0_0_10px_rgba(186,230,253,0.4)]"
+          >
+            <div className="text-center flex flex-col m-auto rounded-2xl p-8   shadow-[0_0_50px_10px_rgba(186,230,253,0.4)] bg-[rgba(186,230,253,0.05)] backdrop-blur-sm">
+              <h1 className="text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
+                Who I am:
+              </h1>
+              <p className="text-[#bae6fd] text-xs md:text-sm xl:text-lg 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8] flex flex-col space-y-4 mt-4 ml-4">
+                <br />
+                I’m a Frontend Engineer with a background in mathematics and
+                computer science education. After 5+ years of breaking down
+                complex logic for students, I now apply that same architectural
+                mindset to building immersive web experiences.
+                <br />
+                <br />I specialize in the intersection of performance and
+                aesthetics—using React, Three.js, and GSAP to turn abstract
+                concepts into interactive reality. My transition from educator
+                to developer wasn’t just a career change; it was an evolution of
+                my passion for logic, problem-solving, and clean design.
+              </p>
             </div>
-          )}
+          </div>
         </section>
         <section
           ref={sectionThreeRef}
@@ -186,7 +151,9 @@ export default function HeroCanvas() {
             Where to find me:
           </h1>
         </section>
-        <section className="h-screen flex items-center p-10 text-white"></section>
+        <section className="h-screen flex items-center p-10 text-white">
+          {contactOpen && <ContactForm setContactOpen={setContactOpen} />}
+        </section>
       </div>
       {mounted && (
         <div className="fixed inset-0 pointer-events-none transition ease-in-out z-100">
@@ -206,13 +173,13 @@ export default function HeroCanvas() {
               {projects.map((project, i) => (
                 <div
                   key={i}
-                  className="pointer-events-auto m-[11%] bg-white/0  shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.3)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] transition-all cursor-pointer group"
+                  className="h-fit pointer-events-auto m-[11%] bg-white/0  shadow-[0_0_15px_5px_rgba(186,230,253,0.5)] hover:bg-[rgba(186,230,253,0.3)] hover:shadow-[0_0_20px_10px_rgba(186,230,253,0.5)] transition-all cursor-pointer group"
                   onClick={() => {
                     setActiveProject(project);
                   }}
                 >
                   <Image
-                    src={`${project.image}`}
+                    src={`${project.thumbnail}`}
                     width={100}
                     height={100}
                     alt="day"
@@ -296,22 +263,5 @@ function OverlayTracker({
     setOverlayPos({ x: (minX + maxX) / 2, y: (minY + maxY) / 2 });
     setOverlaySize({ w: maxX - minX, h: maxY - minY });
   }, 1);
-  return null;
-}
-
-function SetSectionsVisible({
-  setTwoVisible,
-}: {
-  setTwoVisible: (twoVisible: boolean) => void;
-}) {
-  const { camera } = useThree();
-
-  useFrame(() => {
-    if (camera.position.y === -4) {
-      setTwoVisible(true);
-    } else {
-      setTwoVisible(false);
-    }
-  });
   return null;
 }
