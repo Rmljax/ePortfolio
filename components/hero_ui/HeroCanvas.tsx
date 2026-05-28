@@ -152,6 +152,11 @@ export default function HeroCanvas() {
           </h1>
         </section>
         <section className="h-screen flex items-center p-10 text-white">
+          {!contactOpen && (
+            <h1 className="self-start ml-[4%] mt-[2%] text-[#bae6fd] text-xl md:text-3xl xl:text-3xl 2xl:text-5xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
+              Visit Earth to reach out
+            </h1>
+          )}
           {contactOpen && <ContactForm setContactOpen={setContactOpen} />}
         </section>
       </div>
@@ -183,7 +188,7 @@ export default function HeroCanvas() {
                     width={100}
                     height={100}
                     alt="day"
-                    className=" shadow-[inset_0_0_10px_rgba(186,230,253,0.4)] w-full h-full m-auto blur-sm opacity-50 hover:opacity-70 hover:blur-none transition ease-in-out"
+                    className=" shadow-[inset_0_0_10px_rgba(186,230,253,0.4)] w-full h-full m-auto opacity-50 hover:opacity-70 transition ease-in-out"
                   />
                   <h2
                     className="absolute pointer-events-none opacity-0 group-hover:opacity-100 text-[#bae6fd] text-md md:text-lg xl:text-xl 2xl:text-2xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8] transition ease-in-out w-100 duration-200"

@@ -48,6 +48,10 @@ export default function ProjectDescription({
           <p className="text-center mt-4 text-[#bae6fd] text-sm md:text-md xl:text-lg 2xl:text-xl [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
             {project.description}
           </p>
+          <br />
+          <span className="text-center text-[#bae6fd] text-xs md:text-sm xl:text-md 2xl:text-lg [text-shadow:0_0_10px_#bae6fd,0_0_40px_#bae6fd,0_0_60px_#38bdf8]">
+            Built with {project.tools}.
+          </span>
           <div className="absolute bottom-8 left-0 w-full flex justify-evenly">
             <a
               className=" text-[#bae6fd] text-lg md:text-xl xl:text-2xl 2xl:text-3xl hover:scale-110 hover:text-gray-100  drop-shadow-[0_0_10px_#bae6fd,0_0_20px_#bae6fd] hover:drop-shadow-[0_0_10px_#ffffff,0_0_20px_#bae6fd,0_0_40px_#38bdf8]"

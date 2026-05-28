@@ -105,8 +105,8 @@ export default function ScrollThree() {
     } else if (size.width <= 2560) {
       setRightX(7);
       setUpX(-7);
-      setRightY(1);
-      setUpY(1);
+      setRightY(1.3);
+      setUpY(1.3);
     }
 
     rightArrowRef.current.position.y = rightY + Math.sin(time * 2) * 0.1;
